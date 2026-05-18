@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
         
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Inter', system_ui, sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -29,43 +29,38 @@
             background: rgba(0, 0, 0, 0.78);
             border: 6px solid #000000;
             box-shadow: 0 0 80px -15px rgba(0, 0, 0, 0.9);
-            width: 90%;
-            max-width: 900px; /* caja más ancha */
-        }
-        
-        .play-button {
-            font-size: 5.5rem;
-            transition: all 0.4s ease;
-        }
-        
-        .play-button:hover {
-            transform: scale(1.15);
-            color: #fff;
+            width: 560px;
+            max-width: 94vw;
         }
     </style>
 </head>
 <body class="background-gif min-h-screen flex items-center justify-center relative overflow-hidden">
 
-    <!-- Black overlay / Intro -->
-    <div id="intro" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/70 cursor-pointer transition-all duration-700">
+    <!-- Black overlay -->
+    <div class="black-overlay fixed inset-0 z-10"></div>
+
+    <!-- Click Anywhere Screen -->
+    <div id="intro" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 cursor-pointer transition-all duration-700">
         <div class="text-center">
-            <div id="play-btn" 
-                 class="play-button text-white/90 text-[120px] md:text-[160px] font-light mb-6">
-                ▶
-            </div>
-            <p class="text-white text-2xl md:text-3xl tracking-[4px] font-light">CLICK TO PLAY</p>
-            <p class="text-white/60 text-sm mt-8">Luis Angel</p>
+            <h1 class="text-white text-5xl md:text-6xl font-semibold tracking-widest">CLICK ANYWHERE</h1>
+            <p class="text-white/70 text-2xl mt-4 tracking-wider">TO CONTINUE</p>
+            <p class="text-white/50 text-sm mt-12">Luis Angel</p>
         </div>
     </div>
 
     <!-- Main Content -->
     <div id="main-card" class="card relative z-20 rounded-3xl p-12 text-white hidden flex-col items-center">
         
+        <!-- PFP with white line shapes -->
+        <div class="w-52 h-52 rounded-full overflow-hidden border-4 border-black bg-black flex items-center justify-center">
+            <canvas id="canvas" width="208" height="208"></canvas>
+        </div>
+
         <!-- Title -->
-        <h1 class="text-4xl font-semibold mt-6 tracking-tight">Luis Angel</h1>
+        <h1 class="text-4xl font-semibold mt-10 tracking-tight">Luis Angel</h1>
 
         <!-- Description -->
-        <p class="text-center text-white/75 mt-5 text-[17px] leading-relaxed max-w-2xl">
+        <p class="text-center text-white/75 mt-5 text-[17px] leading-relaxed max-w-xs">
             Artist • Producer • Creating vibes from Hermosillo
         </p>
 
@@ -74,36 +69,115 @@
         </div>
     </div>
 
-    <!-- Video/Audio Player -->
-    <video id="music" loop class="hidden">
+    <!-- Invisible MP4 Player -->
+    <video id="player" loop muted playsinline class="hidden">
         <source src="https://github.com/user-attachments/assets/904c5549-ea33-493e-a168-53aa1f509c37" type="video/mp4">
     </video>
 
     <script>
+        // Canvas - White line shapes only
+        function startCanvas() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const shapes = ['circle','square','triangle','star'];
+            
+            class Particle {
+                constructor() { this.reset(); }
+                reset() {
+                    const side = Math.floor(Math.random()*4);
+                    if (side === 0) { this.x = Math.random()*208; this.y = -30; }
+                    else if (side === 1) { this.x = 238; this.y = Math.random()*208; }
+                    else if (side === 2) { this.x = Math.random()*208; this.y = 238; }
+                    else { this.x = -30; this.y = Math.random()*208; }
+                    
+                    this.vx = (Math.random()-0.5)*0.85;
+                    this.vy = (Math.random()-0.5)*0.85;
+                    this.size = 7 + Math.random()*13;
+                    this.type = shapes[Math.floor(Math.random()*4)];
+                    this.rot = Math.random()*Math.PI*2;
+                    this.rotSpeed = (Math.random()-0.5)*0.011;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.rot += this.rotSpeed;
+                    this.vx += (104 - this.x) * 0.001;
+                    this.vy += (104 - this.y) * 0.001;
+                    if (this.x < -70 || this.x > 280 || this.y < -70 || this.y > 280) this.reset();
+                }
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rot);
+                    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+                    ctx.lineWidth = 1.8;
+                    ctx.lineJoin = "round";
+                    
+                    if (this.type === 'circle') {
+                        ctx.beginPath(); ctx.arc(0,0,this.size,0,Math.PI*2); ctx.stroke();
+                    } else if (this.type === 'square') {
+                        ctx.strokeRect(-this.size/2, -this.size/2, this.size, this.size);
+                    } else if (this.type === 'triangle') {
+                        ctx.beginPath();
+                        ctx.moveTo(0, -this.size);
+                        ctx.lineTo(-this.size*0.85, this.size*0.75);
+                        ctx.lineTo(this.size*0.85, this.size*0.75);
+                        ctx.closePath(); ctx.stroke();
+                    } else if (this.type === 'star') {
+                        ctx.beginPath();
+                        for(let i = 0; i < 5; i++) {
+                            ctx.lineTo(Math.cos((i*2.4 - 1.57)) * this.size, Math.sin((i*2.4 - 1.57)) * this.size);
+                            ctx.lineTo(Math.cos((i*2.4)) * this.size * 0.38, Math.sin((i*2.4)) * this.size * 0.38);
+                        }
+                        ctx.closePath(); ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+            }
+            
+            function animate() {
+                ctx.fillStyle = 'rgba(0,0,0,0.35)';
+                ctx.fillRect(0,0,208,208);
+                
+                ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+                ctx.lineWidth = 18;
+                ctx.beginPath();
+                ctx.arc(104,104,88,0,Math.PI*2);
+                ctx.stroke();
+                
+                particles.forEach(p => { p.update(); p.draw(); });
+                if (particles.length < 19 && Math.random() < 0.5) particles.push(new Particle());
+                
+                requestAnimationFrame(animate);
+            }
+            
+            for(let i = 0; i < 15; i++) particles.push(new Particle());
+            animate();
+        }
+
+        // Main logic
         window.onload = function() {
             const intro = document.getElementById('intro');
             const card = document.getElementById('main-card');
-            const video = document.getElementById('music');
-
+            const video = document.getElementById('player');
+            
             function startExperience() {
-                // Fade out del overlay
-                intro.style.transition = 'opacity 0.8s ease';
                 intro.style.opacity = '0';
-
                 setTimeout(() => {
                     intro.style.display = 'none';
-                    
-                    // Mostrar main-card
                     card.classList.remove('hidden');
                     card.classList.add('flex');
                     
-                    // Reproducir video/audio
-                    video.play().catch(e => console.log("Playback started after interaction"));
-                }, 800); // coincide con fade
+                    // Play MP4 invisibly + loop
+                    video.play().catch(() => {});
+                }, 600);
             }
-
-            // Click anywhere para iniciar, solo una vez
-            document.body.addEventListener('click', startExperience, { once: true });
+            
+            // Click ANYWHERE
+            intro.addEventListener('click', startExperience);
+            
+            startCanvas();
         };
     </script>
 </body>
