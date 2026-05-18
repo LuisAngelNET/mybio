@@ -3,116 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Click to Play</title>
+    <title>mybio.lat</title>
     <style>
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background: #000 url('https://i.pinimg.com/originals/12/eb/55/12eb5546de3d7124df0fb9362af2587c.gif') center/cover no-repeat;
+            background: #000 
+url('https://i.pinimg.com/originals/12/eb/55/12eb5546de3d7124df0fb9362af2587c.gif') 
+center/cover no-repeat;
             cursor: none;
             user-select: none;
         }
 
-        /* Transparent ball cursor */
         #custom-cursor {
             position: absolute;
             width: 30px;
             height: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.7);
             border-radius: 50%;
             pointer-events: none;
             transform: translate(-50%, -50%);
             z-index: 9999;
-            opacity: 0.7;
-            transition: transform 0.1s ease;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            opacity: 0.8;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
         }
 
-        /* Giant semi-transparent black square */
         #overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 70vw;
-            height: 70vh;
-            background: rgba(0, 0, 0, 0.65);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.78);
             pointer-events: none;
             z-index: 5;
-            transition: opacity 1.8s ease;
-            box-shadow: 0 0 80px rgba(0, 0, 0, 0.9);
+            transition: opacity 1.5s ease;
         }
 
         #mensaje {
             position: absolute;
-            top: 50%;
+            top: 48%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 2.4rem;
-            color: rgba(255, 255, 255, 0.85);
+            font-size: 2.5rem;
+            color: rgba(255, 255, 255, 0.9);
             text-align: center;
-            pointer-events: none;
             z-index: 10;
-            text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
-            transition: opacity 1.8s ease;
+            text-shadow: 0 0 20px #000;
+            transition: opacity 1.5s ease;
         }
 
-        audio {
-            display: none;
+        #panel {
+            position: absolute;
+            top: 68%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.85);
+            width: 380px;
+            max-width: 92vw;
+            background: rgba(0, 0, 0, 0.92);
+            border: 3px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            padding: 35px 25px 30px;
+            text-align: center;
+            z-index: 30;
+            opacity: 0;
+            transition: all 2.2s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 0 70px rgba(0, 0, 0, 0.95);
+            pointer-events: none;
+        }
+
+        #panel.show {
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        /* CÍRCULO NEGRO */
+        #pfp {
+            width: 170px;
+            height: 170px;
+            background: #0a0a0a;
+            border: 6px solid rgba(255,255,255,0.4);
+            border-radius: 50%;
+            margin: 0 auto 18px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0,0,0,0.95);
+        }
+
+        #name {
+            font-size: 2.3rem;
+            color: #fff;
+            margin: 10px 0 6px;
+            text-shadow: 0 0 12px rgba(255,255,255,0.4);
+        }
+
+        #pig {
+            font-size: 1.55rem;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .shape {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
 
-    <!-- Custom cursor -->
     <div id="custom-cursor"></div>
-
-    <!-- Giant semi-transparent black square -->
     <div id="overlay"></div>
-
-    <!-- Text -->
     <div id="mensaje">Click anywhere to continue</div>
+    <p id="mensaje" style="color: red; margin-top: 12rem;">Epileptic 
+warning</p>
+    <div id="panel">
+        <div id="pfp"></div>
+        <div id="name">Luis Angel</div>
+        <div id="pig">pig</div>
+    </div>
 
-    <!-- Invisible audio -->
     <audio id="miAudio" loop>
-        <source src="https://github.com/user-attachments/assets/904c5549-ea33-493e-a168-53aa1f509c37" type="video/mp4">
+        <source 
+src="https://github.com/user-attachments/assets/904c5549-ea33-493e-a168-53aa1f509c37" 
+type="video/mp4">
     </audio>
 
     <script>
         const audio = document.getElementById('miAudio');
         const mensaje = document.getElementById('mensaje');
         const overlay = document.getElementById('overlay');
+        const panel = document.getElementById('panel');
+        const pfp = document.getElementById('pfp');
         const cursor = document.getElementById('custom-cursor');
 
-        // Custom cursor movement
+        let activeShapes = [];
+
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
 
-        // Play audio + fade out both elements
-        function playAudio() {
-            if (audio.paused) {
-                audio.play().catch(e => console.log("Playback error:", e));
-                
-                // Fade out text and black square together
-                mensaje.style.opacity = "0";
-                overlay.style.opacity = "0";
+        const svgs = [
+            `<svg width="34" height="34" viewBox="0 0 50 50"><circle 
+cx="25" cy="25" r="17" fill="none" stroke="#fff" 
+stroke-width="2.8"/></svg>`,
+            `<svg width="34" height="34" viewBox="0 0 50 50"><rect x="9" 
+y="9" width="32" height="32" rx="3" fill="none" stroke="#fff" 
+stroke-width="2.8"/></svg>`,
+            `<svg width="34" height="34" viewBox="0 0 50 50"><polygon 
+points="25,6 44,38 6,38" fill="none" stroke="#fff" 
+stroke-width="2.8"/></svg>`,
+            `<svg width="34" height="34" viewBox="0 0 50 50"><polygon 
+points="25,6 34,18 46,18 38,30 42,44 25,35 8,44 12,30 4,18 16,18" 
+fill="none" stroke="#fff" stroke-width="2.5"/></svg>`
+        ];
+
+        function createShape() {
+            if (activeShapes.length >= 10) return;
+
+            const radius = 65;
+            const angle = Math.random() * Math.PI * 2;
+            const cx = Math.cos(angle) * radius * 0.7;
+            const cy = Math.sin(angle) * radius * 0.7;
+
+            const div = document.createElement('div');
+            div.className = 'shape';
+            div.innerHTML = svgs[Math.floor(Math.random() * svgs.length)];
+
+            div.style.left = `calc(50% + ${cx - 17}px)`;
+            div.style.top  = `calc(50% + ${cy - 17}px)`;
+
+            pfp.appendChild(div);
+
+            const shapeObj = {
+                el: div,
+                x: cx,
+                y: cy,
+                vx: (Math.random() - 0.5) * 1.8,
+                vy: (Math.random() - 0.5) * 1.8
+            };
+
+            activeShapes.push(shapeObj);
+        }
+
+        function updateShapes() {
+            const circleR = 78;
+
+            for (let i = 0; i < activeShapes.length; i++) {
+                const s = activeShapes[i];
+                s.x += s.vx;
+                s.y += s.vy;
+
+                // Rebotar en las paredes del círculo
+                const dist = Math.sqrt(s.x * s.x + s.y * s.y);
+                if (dist > circleR - 10) {
+                    const angle = Math.atan2(s.y, s.x);
+                    s.x = Math.cos(angle) * (circleR - 12);
+                    s.y = Math.sin(angle) * (circleR - 12);
+                    s.vx *= -0.95;
+                    s.vy *= -0.95;
+                }
+
+                s.el.style.left = `calc(50% + ${s.x - 17}px)`;
+                s.el.style.top  = `calc(50% + ${s.y - 17}px)`;
             }
         }
 
-        document.addEventListener('click', playAudio);
-        document.addEventListener('touchstart', playAudio, { once: true });
+        function onClick() {
+            if (audio.paused) {
+                audio.play().catch(() => {});
 
-        // Optional: slightly fade the overlay after a few seconds
-        setTimeout(() => {
-            overlay.style.opacity = "0.85";
-        }, 2500);
+                mensaje.style.opacity = "0";
+                overlay.style.opacity = "0";
+
+                setTimeout(() => panel.classList.add('show'), 300);
+
+                // Spawnear 5 a la vez
+                setTimeout(() => {
+                    for (let i = 0; i < 5; i++) {
+                        setTimeout(createShape, i * 80);
+                    }
+                }, 700);
+
+                // Seguir spawneando 5 cada cierto tiempo
+                setInterval(() => {
+                    for (let i = 0; i < 5; i++) {
+                        setTimeout(createShape, i * 60);
+                    }
+                }, 1800);
+            }
+        }
+
+        setInterval(updateShapes, 1000/65);
+
+        document.addEventListener('click', onClick);
+        document.addEventListener('touchstart', onClick, { once: true });
     </script>
-
 </body>
 </html>
