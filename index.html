@@ -11,7 +11,7 @@
             height: 100%;
             overflow: hidden;
             background: #000 url('https://i.pinimg.com/originals/12/eb/55/12eb5546de3d7124df0fb9362af2587c.gif') center/cover no-repeat;
-            cursor: none; /* Hide default cursor */
+            cursor: none;
             user-select: none;
         }
 
@@ -30,19 +30,35 @@
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
         }
 
+        /* Giant semi-transparent black square */
+        #overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70vw;
+            height: 70vh;
+            background: rgba(0, 0, 0, 0.65);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+            z-index: 5;
+            transition: opacity 1.8s ease;
+            box-shadow: 0 0 80px rgba(0, 0, 0, 0.9);
+        }
+
         #mensaje {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 2.2rem;
-            color: rgba(255, 255, 255, 0.75);
+            font-size: 2.4rem;
+            color: rgba(255, 255, 255, 0.85);
             text-align: center;
             pointer-events: none;
             z-index: 10;
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-            transition: opacity 1.5s ease;
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+            transition: opacity 1.8s ease;
         }
 
         audio {
@@ -52,9 +68,13 @@
 </head>
 <body>
 
-    <!-- Custom transparent ball cursor -->
+    <!-- Custom cursor -->
     <div id="custom-cursor"></div>
 
+    <!-- Giant semi-transparent black square -->
+    <div id="overlay"></div>
+
+    <!-- Text -->
     <div id="mensaje">Click anywhere to continue</div>
 
     <!-- Invisible audio -->
@@ -65,31 +85,33 @@
     <script>
         const audio = document.getElementById('miAudio');
         const mensaje = document.getElementById('mensaje');
+        const overlay = document.getElementById('overlay');
         const cursor = document.getElementById('custom-cursor');
 
-        // Move custom cursor
+        // Custom cursor movement
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
 
-        // Play audio on click or touch anywhere
+        // Play audio + fade out both elements
         function playAudio() {
             if (audio.paused) {
                 audio.play().catch(e => console.log("Playback error:", e));
-                mensaje.style.opacity = "0"; // Fade out
+                
+                // Fade out text and black square together
+                mensaje.style.opacity = "0";
+                overlay.style.opacity = "0";
             }
         }
 
         document.addEventListener('click', playAudio);
-        
-        // Support for mobile
         document.addEventListener('touchstart', playAudio, { once: true });
 
-        // Optional: Auto-hide message after some time
+        // Optional: slightly fade the overlay after a few seconds
         setTimeout(() => {
-            mensaje.style.opacity = "0.3";
-        }, 3000);
+            overlay.style.opacity = "0.85";
+        }, 2500);
     </script>
 
 </body>
