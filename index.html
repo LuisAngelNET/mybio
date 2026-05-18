@@ -1,37 +1,63 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Click para sonar</title>
+    <title>Click to Play</title>
     <style>
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            background: #000;
-            color: white;
-            font-family: Arial, sans-serif;
             overflow: hidden;
-            cursor: pointer;
+            background: #000 url('https://i.pinimg.com/originals/12/eb/55/12eb5546de3d7124df0fb9362af2587c.gif') center/cover no-repeat;
+            cursor: none; /* Hide default cursor */
+            user-select: none;
         }
+
+        /* Transparent ball cursor */
+        #custom-cursor {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            opacity: 0.7;
+            transition: transform 0.1s ease;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
         #mensaje {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 2rem;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 2.2rem;
+            color: rgba(255, 255, 255, 0.75);
             text-align: center;
             pointer-events: none;
             z-index: 10;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+            transition: opacity 1.5s ease;
+        }
+
+        audio {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <div id="mensaje">Haz clic en cualquier parte para reproducir</div>
+    <!-- Custom transparent ball cursor -->
+    <div id="custom-cursor"></div>
 
-    <!-- Audio invisible -->
+    <div id="mensaje">Click anywhere to continue</div>
+
+    <!-- Invisible audio -->
     <audio id="miAudio" loop>
         <source src="https://github.com/user-attachments/assets/904c5549-ea33-493e-a168-53aa1f509c37" type="video/mp4">
     </audio>
@@ -39,21 +65,31 @@
     <script>
         const audio = document.getElementById('miAudio');
         const mensaje = document.getElementById('mensaje');
+        const cursor = document.getElementById('custom-cursor');
 
-        document.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play().catch(e => console.log("Error al reproducir:", e));
-                mensaje.style.opacity = "0"; // Oculta el mensaje después del primer clic
-            }
+        // Move custom cursor
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
         });
 
-        // Opcional: también funciona con touch en móviles
-        document.addEventListener('touchstart', () => {
+        // Play audio on click or touch anywhere
+        function playAudio() {
             if (audio.paused) {
-                audio.play();
-                mensaje.style.opacity = "0";
+                audio.play().catch(e => console.log("Playback error:", e));
+                mensaje.style.opacity = "0"; // Fade out
             }
-        }, { once: true });
+        }
+
+        document.addEventListener('click', playAudio);
+        
+        // Support for mobile
+        document.addEventListener('touchstart', playAudio, { once: true });
+
+        // Optional: Auto-hide message after some time
+        setTimeout(() => {
+            mensaje.style.opacity = "0.3";
+        }, 3000);
     </script>
 
 </body>
