@@ -6,14 +6,12 @@
     <title>mybio.lat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap');
-        
-        :root {
-            --tw-color-primary: #ffffff;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
         
         body {
             font-family: 'Inter', system_ui, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         
         .background-gif {
@@ -24,26 +22,19 @@
         }
         
         .black-overlay {
-            background: rgba(0, 0, 0, 0.35);
+            background: rgba(0, 0, 0, 0.45);
         }
         
         .card {
-            background: rgba(0, 0, 0, 0.65);
-            border: 4px solid rgba(255, 255, 255, 0.85);
-            box-shadow: 0 0 60px -10px rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.75);
+            border: 5px solid #000000;
+            box-shadow: 0 0 70px -10px rgba(0, 0, 0, 0.8);
+            width: 520px;
+            max-width: 92vw;
         }
         
         .pfp-container {
-            box-shadow: 0 0 40px -5px rgba(255, 255, 255, 0.3);
-        }
-        
-        .intro-screen {
-            animation: fadeIn 1s ease forwards;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            box-shadow: 0 0 35px -5px rgba(255, 255, 255, 0.25);
         }
         
         canvas {
@@ -52,258 +43,154 @@
     </style>
 </head>
 <body class="background-gif min-h-screen flex items-center justify-center relative overflow-hidden">
-    
-    <!-- Black transparent overlay covering the entire screen -->
-    <div class="black-overlay fixed inset-0 z-10 pointer-events-none"></div>
 
-    <!-- Click anywhere to continue screen -->
-    <div id="intro-screen" 
-         class="intro-screen fixed inset-0 z-50 flex items-center justify-center bg-black/70 cursor-pointer">
-        <div class="text-center px-6">
-            <h1 class="text-white text-5xl md:text-6xl font-semibold tracking-widest mb-6">
-                CLICK ANYWHERE
-            </h1>
-            <p class="text-white/80 text-xl md:text-2xl font-light tracking-[3px]">
-                TO CONTINUE
-            </p>
-            <div class="mt-12 text-white/40 text-sm flex items-center justify-center gap-2">
-                <div class="w-3 h-px bg-white/40"></div>
-                TAP TO START MUSIC
-                <div class="w-3 h-px bg-white/40"></div>
-            </div>
+    <!-- Black overlay -->
+    <div class="black-overlay fixed inset-0 z-10"></div>
+
+    <!-- Click to continue -->
+    <div id="intro" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 cursor-pointer transition-opacity duration-700">
+        <div class="text-center">
+            <h1 class="text-white text-5xl md:text-6xl font-semibold tracking-widest">CLICK ANYWHERE</h1>
+            <p class="text-white/70 text-2xl mt-4 tracking-wider">TO CONTINUE</p>
         </div>
     </div>
 
-    <!-- Main content card -->
-    <div class="card relative z-20 w-full max-w-md mx-4 rounded-3xl p-8 md:p-10 text-white">
+    <!-- Main Card - Wider than tall -->
+    <div id="main-card" class="card relative z-20 rounded-3xl p-10 text-white hidden flex-col items-center">
         
-        <!-- PFP: Black circle with slow animated shapes -->
-        <div class="pfp-container mx-auto w-52 h-52 rounded-full overflow-hidden border-4 border-white/90 bg-black flex items-center justify-center">
-            <canvas id="pfp-canvas" width="208" height="208" class="w-full h-full"></canvas>
+        <!-- PFP -->
+        <div class="pfp-container w-48 h-48 rounded-full overflow-hidden border-4 border-black bg-black">
+            <canvas id="canvas" width="192" height="192"></canvas>
         </div>
 
         <!-- Title -->
-        <h1 class="text-center text-4xl font-semibold mt-8 tracking-tight">Luis Angel</h1>
+        <h1 class="text-4xl font-semibold mt-8 tracking-tight text-center">Luis Angel</h1>
 
-        <!-- Description -->
-        <p class="text-center text-white/80 mt-3 text-lg leading-relaxed px-4">
-            Creative artist • Music producer • Dreamer
+        <!-- Description only -->
+        <p id="desc" class="text-center text-white/80 mt-4 text-lg leading-relaxed max-w-xs">
+            <!-- Aquí puedes cambiar tu descripción -->
+            Artist • Producer • Creating vibes from Hermosillo
         </p>
 
-        <!-- Links box (you can edit the links below) -->
-        <div class="mt-10 space-y-3">
-            <a href="#" 
-               class="block bg-white/10 hover:bg-white/20 transition-all text-white text-center py-4 rounded-2xl font-medium text-lg shadow-inner">
-                🎵 Listen to my music
-            </a>
-            <a href="#" 
-               class="block bg-white/10 hover:bg-white/20 transition-all text-white text-center py-4 rounded-2xl font-medium text-lg shadow-inner">
-                📸 Instagram
-            </a>
-            <a href="#" 
-               class="block bg-white/10 hover:bg-white/20 transition-all text-white text-center py-4 rounded-2xl font-medium text-lg shadow-inner">
-                🎥 YouTube
-            </a>
-            <a href="#" 
-               class="block bg-white/10 hover:bg-white/20 transition-all text-white text-center py-4 rounded-2xl font-medium text-lg shadow-inner">
-                🐦 X / Twitter
-            </a>
-        </div>
-
-        <div class="text-center text-white/30 text-xs mt-8">
-            mybio.lat • © Luis Angel
+        <div class="text-white/30 text-xs mt-12">
+            mybio.lat
         </div>
     </div>
 
-    <!-- Hidden audio player -->
-    <audio id="background-music" loop>
+    <!-- Music -->
+    <audio id="music" loop>
         <source src="https://github.com/user-attachments/assets/904c5549-ea33-493e-a168-53aa1f509c37j" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
 
     <script>
-        // Tailwind script already loaded
-        function initTailwind() {
-            // No extra config needed
-        }
-
-        // Canvas animation for PFP
-        function initPFPAnimation() {
-            const canvas = document.getElementById('pfp-canvas');
+        // Canvas animation
+        function startCanvas() {
+            const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
-            const centerX = width / 2;
-            const centerY = height / 2;
-            const radius = 92;
-
             let particles = [];
-            const maxParticles = 28;
-            const types = ['circle', 'square', 'triangle', 'star'];
-
+            const shapes = ['circle','square','triangle','star'];
+            
             class Particle {
                 constructor() {
-                    this.spawnFromEdge();
-                    this.size = 6 + Math.random() * 9;
-                    this.speedX = (Math.random() - 0.5) * 0.8; // very slow
-                    this.speedY = (Math.random() - 0.5) * 0.8;
-                    this.type = types[Math.floor(Math.random() * types.length)];
-                    this.rotation = Math.random() * Math.PI * 2;
-                    this.rotationSpeed = (Math.random() - 0.5) * 0.015;
-                    this.color = `hsl(${Math.random() * 360}, 90%, 85%)`;
+                    this.reset();
                 }
-                
-                spawnFromEdge() {
-                    const side = Math.floor(Math.random() * 4);
-                    if (side === 0) { // top
-                        this.x = Math.random() * width;
-                        this.y = -10;
-                    } else if (side === 1) { // right
-                        this.x = width + 10;
-                        this.y = Math.random() * height;
-                    } else if (side === 2) { // bottom
-                        this.x = Math.random() * width;
-                        this.y = height + 10;
-                    } else { // left
-                        this.x = -10;
-                        this.y = Math.random() * height;
-                    }
+                reset() {
+                    const side = Math.floor(Math.random()*4);
+                    if (side === 0) { this.x = Math.random()*192; this.y = -20; }
+                    else if (side === 1) { this.x = 212; this.y = Math.random()*192; }
+                    else if (side === 2) { this.x = Math.random()*192; this.y = 212; }
+                    else { this.x = -20; this.y = Math.random()*192; }
+                    
+                    this.vx = (Math.random()-0.5)*1.2;
+                    this.vy = (Math.random()-0.5)*1.2;
+                    this.size = 5 + Math.random()*11;
+                    this.type = shapes[Math.floor(Math.random()*4)];
+                    this.rot = Math.random()*Math.PI*2;
+                    this.rotSpeed = (Math.random()-0.5)*0.02;
+                    this.hue = Math.random()*60 + 200;
                 }
-                
                 update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    this.rotation += this.rotationSpeed;
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.rot += this.rotSpeed;
                     
-                    // Gentle inward drift
-                    const dx = centerX - this.x;
-                    const dy = centerY - this.y;
-                    this.speedX += dx * 0.0008;
-                    this.speedY += dy * 0.0008;
+                    // slow pull to center
+                    this.vx += (96 - this.x) * 0.0015;
+                    this.vy += (96 - this.y) * 0.0015;
                     
-                    // Limit speed
-                    const speed = Math.hypot(this.speedX, this.speedY);
-                    if (speed > 1.2) {
-                        this.speedX *= 0.95;
-                        this.speedY *= 0.95;
-                    }
-                    
-                    // Respawn if completely off screen
-                    if (this.x < -50 || this.x > width + 50 || 
-                        this.y < -50 || this.y > height + 50) {
-                        this.spawnFromEdge();
-                    }
+                    if (this.x < -50 || this.x > 250 || this.y < -50 || this.y > 250) this.reset();
                 }
-                
                 draw() {
                     ctx.save();
                     ctx.translate(this.x, this.y);
-                    ctx.rotate(this.rotation);
-                    ctx.fillStyle = this.color;
+                    ctx.rotate(this.rot);
+                    ctx.fillStyle = `hsl(${this.hue}, 90%, 85%)`;
                     
                     if (this.type === 'circle') {
                         ctx.beginPath();
-                        ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                        ctx.arc(0,0,this.size,0,Math.PI*2);
                         ctx.fill();
-                    } 
-                    else if (this.type === 'square') {
-                        ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
-                    } 
-                    else if (this.type === 'triangle') {
+                    } else if (this.type === 'square') {
+                        ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+                    } else if (this.type === 'triangle') {
                         ctx.beginPath();
                         ctx.moveTo(0, -this.size);
-                        ctx.lineTo(-this.size * 0.85, this.size * 0.85);
-                        ctx.lineTo(this.size * 0.85, this.size * 0.85);
-                        ctx.closePath();
+                        ctx.lineTo(-this.size*0.9, this.size*0.8);
+                        ctx.lineTo(this.size*0.9, this.size*0.8);
                         ctx.fill();
-                    } 
-                    else if (this.type === 'star') {
+                    } else if (this.type === 'star') {
                         ctx.beginPath();
-                        const spikes = 5;
-                        const outer = this.size;
-                        const inner = this.size * 0.4;
-                        for (let i = 0; i < spikes; i++) {
-                            ctx.lineTo(
-                                Math.cos((i * 2 * Math.PI) / spikes - Math.PI / 2) * outer,
-                                Math.sin((i * 2 * Math.PI) / spikes - Math.PI / 2) * outer
-                            );
-                            ctx.lineTo(
-                                Math.cos(((i * 2 + 1) * Math.PI) / spikes - Math.PI / 2) * inner,
-                                Math.sin(((i * 2 + 1) * Math.PI) / spikes - Math.PI / 2) * inner
-                            );
+                        for(let i=0; i<5; i++) {
+                            ctx.lineTo(Math.cos((i*2.4-1.57))*this.size, Math.sin((i*2.4-1.57))*this.size);
+                            ctx.lineTo(Math.cos((i*2.4))*this.size*0.4, Math.sin((i*2.4))*this.size*0.4);
                         }
-                        ctx.closePath();
                         ctx.fill();
                     }
                     ctx.restore();
                 }
             }
             
-            function spawnParticle() {
-                if (particles.length < maxParticles) {
-                    particles.push(new Particle());
-                }
-            }
-            
             function animate() {
-                // Black background inside the circle area
-                ctx.fillStyle = '#000000';
-                ctx.fillRect(0, 0, width, height);
+                ctx.fillStyle = 'rgba(0,0,0,0.25)';
+                ctx.fillRect(0,0,192,192);
                 
-                // Draw subtle circle border
-                ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-                ctx.lineWidth = 8;
+                // faint circle
+                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                ctx.lineWidth = 12;
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.arc(96,96,82,0,Math.PI*2);
                 ctx.stroke();
                 
-                // Update & draw particles
-                for (let i = particles.length - 1; i >= 0; i--) {
-                    const p = particles[i];
-                    p.update();
-                    p.draw();
-                }
+                particles.forEach(p => { p.update(); p.draw(); });
                 
-                // Spawn new particles slowly
-                if (Math.random() < 0.45) spawnParticle();
+                if (particles.length < 22 && Math.random() < 0.6) particles.push(new Particle());
                 
                 requestAnimationFrame(animate);
             }
             
-            // Initialize with particles
-            for (let i = 0; i < maxParticles; i++) {
-                particles.push(new Particle());
-            }
-            
+            for(let i=0; i<18; i++) particles.push(new Particle());
             animate();
         }
 
-        // Music + click handler
-        function initMusicAndClick() {
-            const music = document.getElementById('background-music');
-            const introScreen = document.getElementById('intro-screen');
+        // Click handler
+        window.onload = function() {
+            const intro = document.getElementById('intro');
+            const card = document.getElementById('main-card');
+            const audio = document.getElementById('music');
             
-            introScreen.addEventListener('click', function () {
-                introScreen.style.opacity = '0';
+            intro.addEventListener('click', () => {
+                intro.style.opacity = '0';
                 setTimeout(() => {
-                    introScreen.style.display = 'none';
-                }, 600);
-                
-                // Start music after user interaction
-                music.play().catch(err => {
-                    console.log('Music autoplay prevented:', err);
-                });
+                    intro.style.display = 'none';
+                    card.classList.remove('hidden');
+                    card.classList.add('flex');
+                    
+                    // Play music
+                    audio.play().catch(() => {});
+                }, 700);
             });
             
-            // Optional: if user refreshes, music won't play until click again
-            console.log('%c✅ mybio.lat ready — click anywhere to start the music!', 'color:#fff; background:#000; padding:2px 6px; border-radius:4px;');
-        }
-
-        // Main initialization
-        window.onload = function () {
-            initTailwind();
-            initPFPAnimation();
-            initMusicAndClick();
+            startCanvas();
         };
     </script>
 </body>
