@@ -129,4 +129,182 @@
 
         // Canvas animation for PFP
         function initPFPAnimation() {
-            const canvas = document.getElementById('pf
+            const canvas = document.getElementById('pfp-canvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = 92;
+
+            let particles = [];
+            const maxParticles = 28;
+            const types = ['circle', 'square', 'triangle', 'star'];
+
+            class Particle {
+                constructor() {
+                    this.spawnFromEdge();
+                    this.size = 6 + Math.random() * 9;
+                    this.speedX = (Math.random() - 0.5) * 0.8; // very slow
+                    this.speedY = (Math.random() - 0.5) * 0.8;
+                    this.type = types[Math.floor(Math.random() * types.length)];
+                    this.rotation = Math.random() * Math.PI * 2;
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.015;
+                    this.color = `hsl(${Math.random() * 360}, 90%, 85%)`;
+                }
+                
+                spawnFromEdge() {
+                    const side = Math.floor(Math.random() * 4);
+                    if (side === 0) { // top
+                        this.x = Math.random() * width;
+                        this.y = -10;
+                    } else if (side === 1) { // right
+                        this.x = width + 10;
+                        this.y = Math.random() * height;
+                    } else if (side === 2) { // bottom
+                        this.x = Math.random() * width;
+                        this.y = height + 10;
+                    } else { // left
+                        this.x = -10;
+                        this.y = Math.random() * height;
+                    }
+                }
+                
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    this.rotation += this.rotationSpeed;
+                    
+                    // Gentle inward drift
+                    const dx = centerX - this.x;
+                    const dy = centerY - this.y;
+                    this.speedX += dx * 0.0008;
+                    this.speedY += dy * 0.0008;
+                    
+                    // Limit speed
+                    const speed = Math.hypot(this.speedX, this.speedY);
+                    if (speed > 1.2) {
+                        this.speedX *= 0.95;
+                        this.speedY *= 0.95;
+                    }
+                    
+                    // Respawn if completely off screen
+                    if (this.x < -50 || this.x > width + 50 || 
+                        this.y < -50 || this.y > height + 50) {
+                        this.spawnFromEdge();
+                    }
+                }
+                
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rotation);
+                    ctx.fillStyle = this.color;
+                    
+                    if (this.type === 'circle') {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    } 
+                    else if (this.type === 'square') {
+                        ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                    } 
+                    else if (this.type === 'triangle') {
+                        ctx.beginPath();
+                        ctx.moveTo(0, -this.size);
+                        ctx.lineTo(-this.size * 0.85, this.size * 0.85);
+                        ctx.lineTo(this.size * 0.85, this.size * 0.85);
+                        ctx.closePath();
+                        ctx.fill();
+                    } 
+                    else if (this.type === 'star') {
+                        ctx.beginPath();
+                        const spikes = 5;
+                        const outer = this.size;
+                        const inner = this.size * 0.4;
+                        for (let i = 0; i < spikes; i++) {
+                            ctx.lineTo(
+                                Math.cos((i * 2 * Math.PI) / spikes - Math.PI / 2) * outer,
+                                Math.sin((i * 2 * Math.PI) / spikes - Math.PI / 2) * outer
+                            );
+                            ctx.lineTo(
+                                Math.cos(((i * 2 + 1) * Math.PI) / spikes - Math.PI / 2) * inner,
+                                Math.sin(((i * 2 + 1) * Math.PI) / spikes - Math.PI / 2) * inner
+                            );
+                        }
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            }
+            
+            function spawnParticle() {
+                if (particles.length < maxParticles) {
+                    particles.push(new Particle());
+                }
+            }
+            
+            function animate() {
+                // Black background inside the circle area
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, width, height);
+                
+                // Draw subtle circle border
+                ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+                ctx.lineWidth = 8;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // Update & draw particles
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.update();
+                    p.draw();
+                }
+                
+                // Spawn new particles slowly
+                if (Math.random() < 0.45) spawnParticle();
+                
+                requestAnimationFrame(animate);
+            }
+            
+            // Initialize with particles
+            for (let i = 0; i < maxParticles; i++) {
+                particles.push(new Particle());
+            }
+            
+            animate();
+        }
+
+        // Music + click handler
+        function initMusicAndClick() {
+            const music = document.getElementById('background-music');
+            const introScreen = document.getElementById('intro-screen');
+            
+            introScreen.addEventListener('click', function () {
+                introScreen.style.opacity = '0';
+                setTimeout(() => {
+                    introScreen.style.display = 'none';
+                }, 600);
+                
+                // Start music after user interaction
+                music.play().catch(err => {
+                    console.log('Music autoplay prevented:', err);
+                });
+            });
+            
+            // Optional: if user refreshes, music won't play until click again
+            console.log('%c✅ mybio.lat ready — click anywhere to start the music!', 'color:#fff; background:#000; padding:2px 6px; border-radius:4px;');
+        }
+
+        // Main initialization
+        window.onload = function () {
+            initTailwind();
+            initPFPAnimation();
+            initMusicAndClick();
+        };
+    </script>
+</body>
+</html>
