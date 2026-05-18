@@ -1,1 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mybio.lat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap');
+        
+        :root {
+            --tw-color-primary: #ffffff;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .background-gif {
+            background-image: url('https://i.pinimg.com/originals/12/eb/55/12eb5546de3d7124df0fb9362af2587c.gif');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .black-overlay {
+            background: rgba(0, 0, 0, 0.35);
+        }
+        
+        .card {
+            background: rgba(0, 0, 0, 0.65);
+            border: 4px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 0 60px -10px rgba(0, 0, 0, 0.6);
+        }
+        
+        .pfp-container {
+            box-shadow: 0 0 40px -5px rgba(255, 255, 255, 0.3);
+        }
+        
+        .intro-screen {
+            animation: fadeIn 1s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body class="background-gif min-h-screen flex items-center justify-center relative overflow-hidden">
+    
+    <!-- Black transparent overlay covering the entire screen -->
+    <div class="black-overlay fixed inset-0 z-10 pointer-events-none"></div>
 
+    <!-- Click anywhere to continue screen -->
+    <div id="intro-screen" 
+         class="intro-screen fixed inset-0 z-50 flex items-center justify-center bg-black/70 cursor-pointer">
+        <div class="text-center px-6">
+            <h1 class="text-white text-5xl md:text-6xl font-semibold tracking-widest mb-6">
+                CLICK ANYWHERE
+            </h1>
+            <p class="text-white/80 text-xl md:text-2xl font-light tracking-[3px]">
+                TO CONTINUE
+            </p>
+            <div class="mt-12 text-white/40 text-sm flex items-center justify-center gap-2">
+                <div class="w-3 h-px bg-white/40"></div>
+                TAP TO START MUSIC
+                <div class="w-3 h-px bg-white/40"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content card -->
+    <div class="card relative z-20 w-full max-w-md mx-4 rounded-3xl p-8 md:p-10 text-white">
+        
+        <!-- PFP: Black circle with slow animated shapes -->
+        <div class="pfp-container mx-auto w-52 h-52 rounded-full overflow-hidden border-4 border-white/90 bg-black flex items-center justify-center">
+            <canvas id="pfp-canvas" width="208" height="208" class="w-full h-full"></canvas>
+        </div>
+
+        <!-- Title -->
+        <h1 class="text-center text-4xl font-semibold mt-8 tracking-tight">Luis Angel</h1>
+
+        <!-- Description -->
+        <p class="text-center text-white/80 mt-3 text-lg leading-relaxed px-4">
+            Creative artist • Music producer • Dreamer
+        </p>
+
+        <!-- Links box (you can edit the links below) -->
+        <div class="mt-10 space-y-3">
+            <a href="#" 
+               class="block bg-white/10 hover:bg-white/20 transition-all text-white text-center py-4 rounded-2xl font-medium text-lg shadow-inner">
+                🎵 Listen to my music
+            </a>
+            <a href="#" 
+               class="block bg-white/10 hover:bg-white/20 transition-all text-white text-center py-4 rounded-2xl font-medium text-lg shadow-inner">
+                📸 Instagram
+            </a>
+            <a href="#" 
+               class="block bg-white/10 hover:bg-white/20 transition-all text-white text-center py-4 rounded-2xl font-medium text-lg shadow-inner">
+                🎥 YouTube
+            </a>
+            <a href="#" 
+               class="block bg-white/10 hover:bg-white/20 transition-all text-white text-center py-4 rounded-2xl font-medium text-lg shadow-inner">
+                🐦 X / Twitter
+            </a>
+        </div>
+
+        <div class="text-center text-white/30 text-xs mt-8">
+            mybio.lat • © Luis Angel
+        </div>
+    </div>
+
+    <!-- Hidden audio player -->
+    <audio id="background-music" loop>
+        <source src="https://github.com/user-attachments/assets/904c5549-ea33-493e-a168-53aa1f509c37j" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Tailwind script already loaded
+        function initTailwind() {
+            // No extra config needed
+        }
+
+        // Canvas animation for PFP
+        function initPFPAnimation() {
+            const canvas = document.getElementById('pf
