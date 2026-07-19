@@ -1,241 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mybio.lat</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-            background: #000
-url('https://i.pinimg.com/originals/12/eb/55/12eb5546de3d7124df0fb9362af2587c.gif')
-center/cover no-repeat;
-            cursor: none;
-            user-select: none;
-        }
-        #custom-cursor {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            opacity: 0.8;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-        }
-        #overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.78);
-            pointer-events: none;
-            z-index: 5;
-            transition: opacity 1.5s ease;
-        }
-        #click-mensaje {
-            position: absolute;
-            top: 48%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 2.5rem;
-            color: rgba(255, 255, 255, 0.9);
-            text-align: center;
-            z-index: 10;
-            text-shadow: 0 0 20px #000;
-            transition: opacity 1.5s ease;
-        }
-        #epileptic-warning {
-            position: absolute;
-            top: calc(50% + 130px);   /* ← movido 20px hacia abajo */
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: Arial, sans-serif;
-            font-size: 2.2rem;
-            color: #ff3333;
-            text-align: center;
-            z-index: 999;
-            text-shadow: 0 0 15px #000;
-            transition: opacity 1.5s ease;   /* ← misma velocidad que el 
-otro mensaje */
-            width: 90%;
-            max-width: 500px;
-        }
-        #panel {
-            position: absolute;
-            top: 68%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.85);
-            width: 380px;
-            max-width: 92vw;
-            background: rgba(0, 0, 0, 0.92);
-            border: 3px solid rgba(255, 255, 255, 0.25);
-            border-radius: 16px;
-            padding: 35px 25px 30px;
-            text-align: center;
-            z-index: 30;
-            opacity: 0;
-            transition: all 2.2s cubic-bezier(0.23, 1, 0.32, 1);
-            box-shadow: 0 0 70px rgba(0, 0, 0, 0.95);
-            pointer-events: none;
-        }
-        #panel.show {
-            top: 50%;
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-        }
-        /* CÍRCULO NEGRO */
-        #pfp {
-            width: 170px;
-            height: 170px;
-            background: #0a0a0a;
-            border: 6px solid rgba(255,255,255,0.4);
-            border-radius: 50%;
-            margin: 0 auto 18px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 40px rgba(0,0,0,0.95);
-        }
-        #name {
-            font-size: 2.3rem;
-            color: #fff;
-            margin: 10px 0 6px;
-            text-shadow: 0 0 12px rgba(255,255,255,0.4);
-        }
-        #pig {
-            font-size: 1.55rem;
-            color: rgba(255, 255, 255, 0.75);
-        }
-        .shape {
-            position: absolute;
-            pointer-events: none;
-            z-index: 10;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mybio.lat</title>
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background: #000 url('https://i.pinimg.com/originals/12/eb/55/12eb5546de3d7124df0fb9362af2587c.gif') center/cover no-repeat;
+    cursor: none;
+    user-select: none;
+}
+
+#custom-cursor {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    opacity: 0.8;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+}
+
+#overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.78);
+    pointer-events: none;
+    z-index: 5;
+    transition: opacity 1.5s ease;
+}
+
+#click-mensaje {
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    z-index: 10;
+    text-shadow: 0 0 20px #000;
+    transition: opacity 1.5s ease;
+}
+
+#epileptic-warning {
+    position: absolute;
+    top: calc(50% + 130px);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: Arial, sans-serif;
+    font-size: 2.2rem;
+    color: #ff3333;
+    text-align: center;
+    z-index: 999;
+    text-shadow: 0 0 15px #000;
+    transition: opacity 1.5s ease;
+    width: 90%;
+    max-width: 500px;
+}
+
+#panel {
+    position: absolute;
+    top: 68%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.85);
+    width: 380px;
+    max-width: 92vw;
+    background: rgba(0, 0, 0, 0.92);
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    padding: 35px 25px 30px;
+    text-align: center;
+    z-index: 30;
+    opacity: 0;
+    transition: all 2.2s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 0 70px rgba(0, 0, 0, 0.95);
+    pointer-events: none;
+}
+
+#panel.show {
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+/* PFP - Imagen directa */
+#pfp {
+    width: 170px;
+    height: 170px;
+    background: #0a0a0a url('https://mgpgroup.xyz/members/owner.jpg') center/cover no-repeat;
+    border: 6px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    margin: 0 auto 18px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.95);
+}
+
+#name {
+    font-size: 2.3rem;
+    color: #fff;
+    margin: 10px 0 6px;
+    text-shadow: 0 0 12px rgba(255,255,255,0.4);
+}
+
+#pig {
+    font-size: 1.55rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+</style>
 </head>
 <body>
-    <div id="custom-cursor"></div>
-    <div id="overlay"></div>
-    
-    <!-- Mensaje "Click anywhere" -->
-    <div id="click-mensaje">Click anywhere to continue</div>
-    
-    <!-- Advertencia epiléptica (ahora con ID único y misma velocidad) -->
-    <div id="epileptic-warning">Epileptic Warning</div>
+<div id="custom-cursor"></div>
+<div id="overlay"></div>
 
-    <div id="panel">
-        <div id="pfp"></div>
-        <div id="name">Luis Angel</div>
-        <div id="pig">Dev</div>
-    </div>
+<!-- Mensaje "Click anywhere" -->
+<div id="click-mensaje">Click anywhere to continue</div>
 
-    <audio id="miAudio" loop>
-        <source 
-src="https://github.com/user-attachments/assets/904c5549-ea33-493e-a168-53aa1f509c37" 
-type="video/mp4">
-    </audio>
+<!-- Advertencia epiléptica -->
+<div id="epileptic-warning">Epileptic Warning</div>
 
-    <script>
-        const audio = document.getElementById('miAudio');
-        const clickMensaje = document.getElementById('click-mensaje');
-        const epilepticWarning = 
-document.getElementById('epileptic-warning');
-        const overlay = document.getElementById('overlay');
-        const panel = document.getElementById('panel');
-        const pfp = document.getElementById('pfp');
-        const cursor = document.getElementById('custom-cursor');
-        let activeShapes = [];
+<div id="panel">
+    <div id="pfp"></div>
+    <div id="name">Luis Angel</div>
+    <div id="pig">Dev</div>
+</div>
 
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
+<audio id="miAudio" loop>
+    <source src="https://github.com/user-attachments/assets/904c5549-ea33-493e-a168-53aa1f509c37" type="video/mp4">
+</audio>
 
-        const svgs = [
-            `<svg width="34" height="34" viewBox="0 0 50 50"><circle 
-cx="25" cy="25" r="17" fill="none" stroke="#fff" 
-stroke-width="2.8"/></svg>`,
-            `<svg width="34" height="34" viewBox="0 0 50 50"><rect x="9" 
-y="9" width="32" height="32" rx="3" fill="none" stroke="#fff" 
-stroke-width="2.8"/></svg>`,
-            `<svg width="34" height="34" viewBox="0 0 50 50"><polygon 
-points="25,6 44,38 6,38" fill="none" stroke="#fff" 
-stroke-width="2.8"/></svg>`,
-            `<svg width="34" height="34" viewBox="0 0 50 50"><polygon 
-points="25,6 34,18 46,18 38,30 42,44 25,35 8,44 12,30 4,18 16,18" 
-fill="none" stroke="#fff" stroke-width="2.5"/></svg>`
-        ];
+<script>
+const audio = document.getElementById('miAudio');
+const clickMensaje = document.getElementById('click-mensaje');
+const epilepticWarning = document.getElementById('epileptic-warning');
+const overlay = document.getElementById('overlay');
+const panel = document.getElementById('panel');
+const cursor = document.getElementById('custom-cursor');
 
-        function createShape() {
-            if (activeShapes.length >= 10) return;
-            const radius = 65;
-            const angle = Math.random() * Math.PI * 2;
-            const cx = Math.cos(angle) * radius * 0.7;
-            const cy = Math.sin(angle) * radius * 0.7;
-            const div = document.createElement('div');
-            div.className = 'shape';
-            div.innerHTML = svgs[Math.floor(Math.random() * svgs.length)];
-            div.style.left = `calc(50% + ${cx - 17}px)`;
-            div.style.top = `calc(50% + ${cy - 17}px)`;
-            pfp.appendChild(div);
-            const shapeObj = { el: div, x: cx, y: cy, vx: (Math.random() - 
-0.5) * 1.8, vy: (Math.random() - 0.5) * 1.8 };
-            activeShapes.push(shapeObj);
-        }
+document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+});
 
-        function updateShapes() {
-            const circleR = 78;
-            for (let i = 0; i < activeShapes.length; i++) {
-                const s = activeShapes[i];
-                s.x += s.vx;
-                s.y += s.vy;
-                const dist = Math.sqrt(s.x * s.x + s.y * s.y);
-                if (dist > circleR - 10) {
-                    const angle = Math.atan2(s.y, s.x);
-                    s.x = Math.cos(angle) * (circleR - 12);
-                    s.y = Math.sin(angle) * (circleR - 12);
-                    s.vx *= -0.95;
-                    s.vy *= -0.95;
-                }
-                s.el.style.left = `calc(50% + ${s.x - 17}px)`;
-                s.el.style.top = `calc(50% + ${s.y - 17}px)`;
-            }
-        }
+function onClick() {
+    if (audio.paused) {
+        audio.play().catch(() => {});
 
-        function onClick() {
-            if (audio.paused) {
-                audio.play().catch(() => {});
-                
-                // Ambos mensajes desaparecen a la misma velocidad
-                clickMensaje.style.opacity = "0";
-                epilepticWarning.style.opacity = "0";
-                
-                overlay.style.opacity = "0";
-                setTimeout(() => panel.classList.add('show'), 300);
+        clickMensaje.style.opacity = "0";
+        epilepticWarning.style.opacity = "0";
+        overlay.style.opacity = "0";
+        
+        setTimeout(() => panel.classList.add('show'), 300);
+    }
+}
 
-                setTimeout(() => {
-                    for (let i = 0; i < 5; i++) {
-                        setTimeout(createShape, i * 80);
-                    }
-                }, 700);
-
-                setInterval(() => {
-                    for (let i = 0; i < 5; i++) {
-                        setTimeout(createShape, i * 60);
-                    }
-                }, 1800);
-            }
-        }
-
-        setInterval(updateShapes, 1000/65);
-        document.addEventListener('click', onClick);
-        document.addEventListener('touchstart', onClick, { once: true });
-    </script>
+document.addEventListener('click', onClick);
+document.addEventListener('touchstart', onClick, { once: true });
+</script>
 </body>
 </html>
